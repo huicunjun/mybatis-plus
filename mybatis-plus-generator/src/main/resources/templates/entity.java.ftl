@@ -7,6 +7,7 @@ import ${pkg};
 <#list importEntityJavaPackages as pkg>
 import ${pkg};
 </#list>
+
 /**
  * <p>
  * ${table.comment!}
@@ -106,7 +107,7 @@ public class ${entity} {
             ", ${field.propertyName} = " + ${field.propertyName} +
         </#if>
     </#list>
-        "}";
+            "}";
     }
 </#if>
 }

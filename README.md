@@ -9,17 +9,23 @@
 </p>
 
 <p align="center">
-  <a href="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.baomidou%22%20AND%20a%3A%22mybatis-plus%22">
+
+  <a href="https://github.com/baomidou/mybatis-plus">
+    <img alt="code style" src="https://img.shields.io/github/stars/baomidou/mybatis-plus?style=social">
+  </a>
+
+  <a href="https://gitee.com/baomidou/mybatis-plus">
+    <img alt="code style" src="https://gitee.com/baomidou/mybatis-plus/badge/star.svg">
+  </a>
+
+  <a href="https://gitcode.com/baomidou/mybatis-plus">
+    <img alt="code style" src="https://gitcode.com/baomidou/mybatis-plus/star/badge.svg">
+  </a>
+
+  <a href="https://search.maven.org/search?q=g:com.baomidou%20a:mybatis-*">
     <img alt="maven" src="https://img.shields.io/maven-central/v/com.baomidou/mybatis-plus.svg?style=flat-square">
   </a>
 
-  <a href="https://www.apache.org/licenses/LICENSE-2.0">
-    <img alt="code style" src="https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=flat-square">
-  </a>
-
-  <a href="https://gitter.im/baomidou/mybatis-plus?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge">
-    <img alt="Join the chat at https://gitter.im/baomidou/mybatis-plus" src="https://badges.gitter.im/baomidou/mybatis-plus.svg">
-  </a>
 </p>
 
 [企业版 Mybatis-Mate 高级特性](https://gitee.com/baomidou/mybatis-mate-examples)
@@ -41,8 +47,8 @@
 
 ## What is MyBatis-Plus?
 
-MyBatis-Plus is an powerful enhanced toolkit of MyBatis for simplify development. This toolkit provides some efficient,
-useful, out-of-the-box features for MyBatis, use it can effectively save your development time.
+MyBatis-Plus is a powerful and enhanced toolkit of MyBatis for simplifying development.
+It provides efficient, and out-of-the-box features (such as code generation, conditional query builders, pagination plugins...), effectively saving development time
 
 ## Links
 

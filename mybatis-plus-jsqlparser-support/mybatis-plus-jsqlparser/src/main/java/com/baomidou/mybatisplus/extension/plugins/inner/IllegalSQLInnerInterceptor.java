@@ -196,6 +196,9 @@ public class IllegalSQLInnerInterceptor extends JsqlParserSupport implements Inn
                 Subtraction subSelect = (Subtraction) inExpression.getRightExpression();
                 throw new MybatisPlusException("非法SQL，where条件中不能使用子查询，错误子查询SQL信息：" + subSelect.toString());
             }
+            if (inExpression.getRightExpression() instanceof OrExpression) {
+                validExpression(inExpression.getRightExpression());
+            }
         }
 
     }
@@ -231,19 +234,12 @@ public class IllegalSQLInnerInterceptor extends JsqlParserSupport implements Inn
         //是否使用索引
         boolean useIndexFlag = false;
         if (StringUtils.isNotBlank(columnName)) {
-            String tableInfo = table.getName();
             //表存在的索引
-            String dbName = null;
-            String tableName;
-            String[] tableArray = tableInfo.split("\\.");
-            if (tableArray.length == 1) {
-                tableName = tableArray[0];
-            } else {
-                dbName = tableArray[0];
-                tableName = tableArray[1];
-            }
+            String dbName = table.getSchemaName();
+            String tableName = table.getName();
+            String catalogName = table.getCatalogName();
             columnName = SqlParserUtils.removeWrapperSymbol(columnName);
-            List<IndexInfo> indexInfos = getIndexInfos(dbName, tableName, connection);
+            List<IndexInfo> indexInfos = getIndexInfos(null, catalogName, dbName, tableName, connection);
             for (IndexInfo indexInfo : indexInfos) {
                 if (indexInfo.getColumnName().equalsIgnoreCase(columnName)) {
                     useIndexFlag = true;
@@ -252,7 +248,7 @@ public class IllegalSQLInnerInterceptor extends JsqlParserSupport implements Inn
             }
         }
         if (!useIndexFlag) {
-            throw new MybatisPlusException("非法SQL，SQL未使用到索引, table:" + table + ", columnName:" + columnName);
+            throw new MybatisPlusException("非法SQL，SQL未使用到索引, table:" + table.getName() + ", columnName:" + columnName);
         }
     }
 
@@ -314,11 +310,14 @@ public class IllegalSQLInnerInterceptor extends JsqlParserSupport implements Inn
     /**
      * 得到表的索引信息
      *
-     * @param dbName    ignore
-     * @param tableName ignore
-     * @param conn      ignore
-     * @return ignore
+     * @param dbName    数据库名
+     * @param tableName 表名
+     * @param conn      数据库连接
+     * @return 索引信息
+     * @see #getIndexInfos(String, String, String, String, Connection)
+     * @deprecated 3.5.11
      */
+    @Deprecated
     public List<IndexInfo> getIndexInfos(String dbName, String tableName, Connection conn) {
         return getIndexInfos(null, dbName, tableName, conn);
     }
@@ -326,13 +325,31 @@ public class IllegalSQLInnerInterceptor extends JsqlParserSupport implements Inn
     /**
      * 得到表的索引信息
      *
-     * @param key       ignore
-     * @param dbName    ignore
-     * @param tableName ignore
-     * @param conn      ignore
-     * @return ignore
+     * @param key       缓存key
+     * @param dbName    数据库名
+     * @param tableName 表名
+     * @param conn      数据库连接
+     * @return 索引信息
+     * @see #getIndexInfos(String, String, String, String, Connection)
+     * @deprecated 3.5.11
      */
+    @Deprecated
     public List<IndexInfo> getIndexInfos(String key, String dbName, String tableName, Connection conn) {
+        return getIndexInfos(key, null, dbName, tableName, conn);
+    }
+
+    /**
+     * 得到表的索引信息
+     *
+     * @param key         缓存key
+     * @param catalogName catalogName
+     * @param dbName      数据库名
+     * @param tableName   表名
+     * @param conn        数据库连接
+     * @return 索引信息
+     * @since 3.5.11
+     */
+    public List<IndexInfo> getIndexInfos(String key, String catalogName, String dbName, String tableName, Connection conn) {
         List<IndexInfo> indexInfos = null;
         if (StringUtils.isNotBlank(key)) {
             indexInfos = indexInfoMap.get(key);
@@ -341,7 +358,7 @@ public class IllegalSQLInnerInterceptor extends JsqlParserSupport implements Inn
             ResultSet rs;
             try {
                 DatabaseMetaData metadata = conn.getMetaData();
-                String catalog = StringUtils.isBlank(dbName) ? conn.getCatalog() : dbName;
+                String catalog = StringUtils.isBlank(catalogName) ? conn.getCatalog() : catalogName;
                 String schema = StringUtils.isBlank(dbName) ? conn.getSchema() : dbName;
                 rs = metadata.getIndexInfo(catalog, schema, SqlParserUtils.removeWrapperSymbol(tableName), false, true);
                 indexInfos = new ArrayList<>();

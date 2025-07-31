@@ -17,6 +17,7 @@ package com.baomidou.mybatisplus.extension.plugins.inner;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.parser.JsqlParserSupport;
+import com.baomidou.mybatisplus.jsqlparser.enums.ExpressionAppendMode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -47,6 +48,13 @@ import java.util.stream.Collectors;
 @SuppressWarnings({"rawtypes"})
 public abstract class BaseMultiTableInnerInterceptor extends JsqlParserSupport implements InnerInterceptor {
 
+    /**
+     * 条件表达式追加模式 (默认放置最后,仅作用于update,delete,select)
+     *
+     * @since 3.5.11
+     */
+    private ExpressionAppendMode expressionAppendMode = ExpressionAppendMode.LAST;
+
     protected void processSelectBody(Select selectBody, final String whereSegment) {
         if (selectBody == null) {
             return;
@@ -76,14 +84,29 @@ public abstract class BaseMultiTableInnerInterceptor extends JsqlParserSupport i
         }
         if (where != null) {
             if (where instanceof OrExpression) {
-                return new AndExpression(new Parenthesis(where), expression);
+                return appendExpression(new Parenthesis(where), expression);
             } else {
-                return new AndExpression(where, expression);
+                return appendExpression(where, expression);
             }
         }
         return expression;
     }
 
+    /**
+     * 追加表达式，默认追加到后面，可以配置变量 {@link #expressionAppendMode} 来控制追加到前面还是后面
+     *
+     * @param currentExpression 原sql的条件表达式
+     * @param injectExpression  注入的表达式
+     * @return 追加了条件的完整表达式(where条件 / on条件)
+     * @since 3.5.11
+     */
+    protected Expression appendExpression(Expression currentExpression, Expression injectExpression) {
+        if (ExpressionAppendMode.LAST == expressionAppendMode || expressionAppendMode == null) {
+            return new AndExpression(currentExpression, injectExpression);
+        } else {
+            return new AndExpression(injectExpression, currentExpression);
+        }
+    }
     /**
      * 处理 PlainSelect
      */
@@ -403,9 +426,9 @@ public abstract class BaseMultiTableInnerInterceptor extends JsqlParserSupport i
             return injectExpression;
         }
         if (currentExpression instanceof OrExpression) {
-            return new AndExpression(new Parenthesis(currentExpression), injectExpression);
+            return appendExpression(new Parenthesis(currentExpression), injectExpression);
         } else {
-            return new AndExpression(currentExpression, injectExpression);
+            return appendExpression(currentExpression, injectExpression);
         }
     }
 

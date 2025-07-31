@@ -1,19 +1,2 @@
-- fix: 修复链式模型生成错误
-- fix: 修复`UUID`主键执行批量删除错
-- fix: 修复`Kotlin`使用`select(predicate)`方法错误
-- fix: 修复`AbstractCaffeineJsqlParseCache`异步产生的错误
-- fix: 修复动态SQL解析包含SQL注释(--或#)导致的合并错误
-- fix: 修复`DataChangeRecorderInnerInterceptor`数据比较出现强转异常
-- feat: 支持生成器`Entity`指定`serialVersionUID`添加`@Serial`注解
-- feat: 支持生成器`Entity`注解(字段,类注解)自定义处理
-- feat: 支持生成器`Entity`导包自定义处理
-- feat: 支持崖山数据库
-- feat: 支持`Hive2`分页
-- feat: 升级`Gradle`至8.10
-- opt: 调整`DbType#GAUSS`数据库名为gauss
-- opt: 调整`JsqlParser`解析线程池指定
-- opt: 移除过时的`FieldStrategy.IGNORED`
-- opt: 移除过时的`GlobalConfig.DbConfig#selectStrategy`
-- opt: 移除过时的`MybatisSqlSessionFactoryBean#typeEnumsPackage`
-- doc: 修正`DdlHelper`中注释错误
--
+- fix: 修复在`Spring`中使用`@PostConstruct`调用`Db`方法查询出现警告日志
+- feat: 升级`Jsqlparser`5.2

@@ -15,24 +15,13 @@
  */
 package com.baomidou.mybatisplus.extension.spi;
 
-import org.apache.ibatis.logging.Log;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-
-import java.io.InputStream;
-import java.util.function.Consumer;
-
 /**
  * Web 开发平台待兼容方法集接口类
+ *
+ * @see com.baomidou.mybatisplus.core.spi.CompatibleSet
+ * @deprecated 3.5.12
  */
-public interface CompatibleSet {
-
-    SqlSession getSqlSession(SqlSessionFactory sessionFactory);
-
-    void closeSqlSession(SqlSession session, SqlSessionFactory sessionFactory);
-
-    boolean executeBatch(SqlSessionFactory sqlSessionFactory, Log log, Consumer<SqlSession> consumer);
-
-    InputStream getInputStream(String path) throws Exception;
+@Deprecated
+public interface CompatibleSet extends com.baomidou.mybatisplus.core.spi.CompatibleSet {
 
 }
